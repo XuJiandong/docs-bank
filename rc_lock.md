@@ -25,7 +25,7 @@ Depending on the value of the flag, the identity content has different interpret
 * 0x0: identity content represents the blake160 hash of a secp256k1 public key. The lock script will perform secp256k1 signature verification, just as the [SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#secp256k1blake160) lock.
 * 0xFC: identity content represents the blake160 hash of a lock script. The lock script will check if current transaction contains an input cell with matching lock script. Otherwise it would return with an error.
 * 0xFD: identity content represents the blake160 hash of a preimage. The preimage contains [exec](https://github.com/nervosnetwork/rfcs/pull/237) information which are used to delegate signature verification to another script via exec.
-* 0xFE: identity content represents the blake160 hash of a preimage. The preimage contains dynamic linking information which are used to delegate signature verification to dynamic liking script. The interface described in [Swappable Signature Verification Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) are used here.
+* 0xFE: identity content represents the blake160 hash of a preimage. The preimage contains dynamic linking information which are used to delegate signature verification to dynamic linking script. The interface described in [Swappable Signature Verification Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
 
 
 ## Regulation Compliance Lock Script
@@ -42,7 +42,7 @@ The `<RC lock args>` is with structure:
 <1 byte RC lock flags> <32 byte RC cell type ID> <2 bytes minimun ckb/udt in ACP> <8 bytes since for time lock>
 ```
 
-when `<RC lock flags> & 1` is not zero,  we call it "administrator mode" and <32 byte RC cell type ID> is present. The RC cell type ID contains the [type script hash](https://xuejie.space/2020_02_03_introduction_to_ckb_script_programming_type_id/) used by a special cell with the same format as [RCE Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338), but with the following differences:
+when `<RC lock flags> & 1` is not zero,  which we call "administrator mode", <32 byte RC cell type ID> is present. The RC cell type ID contains the [type script hash](https://xuejie.space/2020_02_03_introduction_to_ckb_script_programming_type_id/) used by a special cell with the same format as [RCE Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338), but with the following differences:
 
 * The cell used here contains identities, not lock script hashes.
 * If the cell contains a RCRule structure, the RCRule structure must be in whitelist mode.
@@ -54,9 +54,9 @@ When an administrator tries to unlock the cell using RC lock, the administrator 
 
 When it's in "administrator mode", "anyone-can-pay mode" and "time lock mode" below are ignored.
 
-when `<RC lock flags> & (1 << 1)` is not zero, we call it "anyone-can-pay mode" and `<2 bytes minimun ckb/udt in ACP>` is present. it follows the script: [anyone-can-pay lock](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438). The `<1 byte CKByte minimum>` and `<1 byte UDT minimum>` are present at same time. 
+when `<RC lock flags> & (1 << 1)` is not zero, which we call "anyone-can-pay mode"m, `<2 bytes minimun ckb/udt in ACP>` is present. it follows the script: [anyone-can-pay lock](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438). The `<1 byte CKByte minimum>` and `<1 byte UDT minimum>` are present at same time. 
 
-when `<RC lock flags> & (1 << 2)` is not zero,  we call it "time lock mode" and `<8 bytes since for time lock>` is present. The [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91) is used. The input parameter `since` is obtained from ` <8 bytes since for time lock>`.
+when `<RC lock flags> & (1 << 2)` is not zero,  which we call "time lock mode", `<8 bytes since for time lock>` is present. The [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91) is used. The input parameter `since` is obtained from ` <8 bytes since for time lock>`.
 
 The "anyone-can-pay mode" and "time lock mode" can co-exist.
 
@@ -92,7 +92,7 @@ Once the identity to be used is confirmed, we will look for the flag in the desi
 * In case the identity flag is 0x0, a signature must be present in `RcLockWitnessLock`, we will used the signature for secp256k1 recoverable signature verification. The recovered public key hash using blake160 algorithm, must match the current identity content.
 * In case the identity flag is 0xFC, we will check against current transaction, and there must be an input cell, whose lock script matches the identity content when hashed via blake160.
 
-The other identity flags other than 0x0 and 0xFC are not recommended although they are supported.
+Identity flags other than 0x0 and 0xFC are not recommended although they are supported.
 
 When `signature` is present, the signature can be used to unlock the cell in "anyone-can-pay mode".
 
@@ -105,15 +105,16 @@ place (1 bytes)
 bounds (8 bytes)
 pubkey hash (20 bytes)
 ```
-It firstly encodes message, signature, pubkey hash into heximal string suggested by [Ideas on chained locks](https://talk.nervos.org/t/ideas-on-chained-locks/5887). They are passed in as arguments in [ckb_exec](https://github.com/nervosnetwork/rfcs/pull/237/files). The final return code is the same as ckb_exec.
 
-* 0xFE (dynamic liking), the preimage's memory layout is the following:
+It first encodes message, signature, pubkey hash into hex string suggested by [Ideas on chained locks](https://talk.nervos.org/t/ideas-on-chained-locks/5887). They are passed in as arguments in [ckb_exec](https://github.com/nervosnetwork/rfcs/pull/237/files). The final return code is the same as ckb_exec.
+
+* 0xFE (dynamic linking), the preimage's memory layout is the following:
 ```
 dynamic library code hash (32 bytes)
 dynamic library hash type (1 bytes)
 pubkey hash （20 bytes)
 ```
-It loads the dynamic liking library by "code hash/hash type" and gets the entry function of [validate_signature](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802). Then it calls the entry function to validate message and signature. The returned "identity" from entry function is compared with blake160 hash of pubkey. If they are same, then the validation succeeds.
+It loads the dynamic linking library by "code hash/hash type" and gets the entry function of [validate_signature](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802). Then it calls the entry function to validate message and signature. The "identity" returned from entry function is compared with blake160 hash of pubkey. If they are same, then the validation succeeds.
 
 
 ## Examples
