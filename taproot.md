@@ -38,12 +38,13 @@ a `TaprootLockWitnessLock` data structure as follows, must be present:
 ```
 
 table TaprootScriptPath {
-    taproot_output_key: Byte32
-    taproot_internal_key: Byte32
-    smt_root: Byte32
-    smt_proof: Bytes
-    y_parity: Byte
-    exec_script: ScriptOpt
+    taproot_output_key: Byte32,
+    taproot_internal_key: Byte32,
+    smt_root: Byte32,
+    smt_proof: Bytes,
+    y_parity: Byte,
+    exec_script: ScriptOpt,
+    args2: Bytes
 }
 
 option TaprootScriptPathOpt (TaprootScriptPath)
@@ -71,7 +72,7 @@ tagged_hash(tag, x) = SHA256(SHA256(tag) || SHA256(tag) || x)
 ```
 We can defined it as following:
 ```
-ckb_tagged_hash(tag, x) = blake2b(blake2b(tag) || blake2b(tag) || x)
+ckb_tagged_hash(tag, x) = blake2b(tag || x)
 ```
 It will be used in later section.
 
@@ -140,11 +141,12 @@ The `smt_root` and `smt_proof` are also passed as arguments.  If the `smt_verify
                     uint32_t length, int argc, const char* argv[]);
     ```
 
-    The `args` is converted to hex format. For example, an array of four bytes
+    The `args` is converted to hex format and then used as `argv[0]`. For example, an array of four bytes
     ```
     [1,2,15,16]
     ```
-    is converted to string: "01020F10". If the length of `args` is zero, the `exec` is invoked without arguments.
+    is converted to string: "01020F10". If the length of `args` is zero, the `argv[0]` is NULL. 
+    Same rule is applied to `args2` which is used as `argv[1]`.
 
 * the return code of `exec` is the final result of the unlocking process
 
