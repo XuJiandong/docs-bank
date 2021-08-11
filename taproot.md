@@ -13,12 +13,12 @@ shows unlimited flexibility. It follows [BIP341](https://github.com/bitcoin/bips
 ## Identity
 
 The Taproot lock shares the same concept of `identity` which is used in RC Lock.
-It is an identity with 21 byte long data structure containing the following components:
+It is an identity with 21-byte long data structure containing the following components:
 ```
-<1 byte flag> <20 byte identity content>
+<1 byte flag> <20 bytes identity content>
 ```
 A new identity flags value (0x6) is allocated for Taproot lock. The identity content is the blake160 
-hash of taproot output key. A taproot output key is the 32-byte array which represents a public key according to [BIP340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki).
+hash of taproot output key. A taproot output key is the 32-byte array which represents a schnorr public key according to [BIP340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki).
 
 
 ## Taproot Lock Script
@@ -62,7 +62,7 @@ argv_hash: 20 bytes
 When `preimage` is present, `smt_proof` and `exec_argv` must be present too. 
 These fields will be described in the following sections.
 
-There are 2 unlock methods: key path spending and script path spending. They are almost identical as [Script validation rules in BIP341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#script-validation-rules), except some data structures.
+There are 2 unlock methods: key path spending and script path spending. They are almost identical to [Script validation rules in BIP341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#script-validation-rules), except some data structures.
 
 ### Tagged Hash
 In BIP340, the tagged hash is defined as:
@@ -89,7 +89,7 @@ Because schnorr signature  is not standardized, we here use all the definitions 
 > Implicit Y coordinates In order to support efficient verification and batch verification, the Y coordinate of P and of R cannot be ambiguous (every valid X coordinate has two possible Y coordinates).
 > Implicitly choosing the Y coordinate that is even[6].
 
-> Final scheme As a result, our final scheme ends up using public key pk which is the X coordinate of a point P on the curve 
+> Final scheme: As a result, our final scheme ends up using public key pk which is the X coordinate of a point P on the curve 
 > whose Y coordinate is even and signatures (r,s) where r is the X coordinate of a point R whose Y coordinate is even. 
 > The signature satisfies s⋅G = R + tagged_hash(r || pk || m)⋅P.
 
@@ -101,7 +101,7 @@ When `signature` is none and `preimage`, `smt_proof`, `exec_argv` are not none:
 the script path spending is used. 
 To simplify the process, we will use some python code here. The referenced python code can be  found on [bip340 reference.py](https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py).
 
-* tweaked key is calculated from `taproot_internal_key` and `smt_root`
+* A tweaked key is calculated from `taproot_internal_key` and `smt_root`
 
     ```Python
     def taproot_tweak_pubkey(pubkey: bytes, h: bytes) -> Tuple[int, bytes]:
@@ -123,20 +123,20 @@ To simplify the process, we will use some python code here. The referenced pytho
     ```   
     y_parity is also returned.
 
-* if the returned tweaked key is not same as `taproot_output_key`, then failed
-* if the returned y_parity is not same as `y_parity`, then failed
+* if the returned tweaked key is not same as `taproot_output_key`, then fail
+* if the returned y_parity is not same as `y_parity`, then fail
 * SMT verification
 
     When [SMT Verification](https://github.com/jjyr/sparse-merkle-tree/blob/2dce546eab6f7eaaab3a0886247fd12ac798ad28/c/ckb_smt.h#L705) is used, the
-key is `script_code_hash`. The `script_hash_type`, `argv_hash`  and 1-byte content with 1 are combined as value. 
-The `smt_root` and `smt_proof` are also passed in as arguments.  If the `smt_verify` return failed status, then failed.
+key (32 bytes) is `script_code_hash`. The `script_hash_type`, `argv_hash`  and 1-byte content with 1 are combined as value(32 bytes), padding with zero. 
+The `smt_root` and `smt_proof` are also passed as arguments.  If the `smt_verify` return failed status, then fail.
 
     The 1-byte content with 1 in value is to make sure the value can't be  all zero.
 
 
-* if `argv_hash` is not all zero and blake160 hash of `exec_argv` is not same as `argv_hash`, then failed.
+* if `argv_hash` is not all zero and blake160 hash of `exec_argv` is not same as `argv_hash`, then fail.
 
-    if `argv_hash` is all zero, it means the `exec_argv` is not used and can be ignored.
+    if `argv_hash` is all zero, it means the `exec_argv` is not used.
 
 * call syscall `exec` with arguments of `script_code_hash`, `script_hash_type` and `exec_argv`
 
@@ -151,7 +151,7 @@ The `smt_root` and `smt_proof` are also passed in as arguments.  If the `smt_ver
     ```
     [1,2,15,16]
     ```
-    is converted to string: "01020F10". if `argv_hash` is all zero, the `exec_argv` is not used here: set `argc` to 0.
+    is converted to string: "01020F10". if `argv_hash` is all zero, the `exec_argv` is not used here.
 
 * the return code of `exec` is the final result of the unlocking process
 
@@ -176,7 +176,7 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <valid schnorr signature for taproot output key 1>
+        signature: <taproot output key 1> <valid schnorr signature for taproot output key 1>
         preimage:  <MISSING>
         smt_proof: <MISSING>
         exec_argv: <MISSING>
@@ -209,7 +209,7 @@ Witnesses:
             taproot_output_key: <taproot output key 1>
             taproot_internal_key: <taproot internal key>
             smt_root: <SMT root>
-            y_parity: <parity of y in taproot output key position on elliptic curve>
+            y_parity: <parity of Y which belongs to a point P on the curve whose X coordinate is taproot output key 1>
             script_code_hash: <code hash of script>
             script_hash_type: <hash type of script>
             argv_hash: <blake160 hash of exec_argv>
