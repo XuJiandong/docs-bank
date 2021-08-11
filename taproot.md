@@ -36,11 +36,21 @@ When unlocking a Taproot lock,  the corresponding witness must be a
 proper `WitnessArgs` data structure in molecule format: In lock field of the `WitnessArgs`, 
 a `TaprootLockWitnessLock` data structure as follows, must be present:
 ```
+
+table TaprootScriptPath {
+    taproot_output_key: Byte32
+    taproot_internal_key: Byte32
+    smt_root: Byte32
+    smt_proof: Bytes
+    y_parity: Byte
+    exec_script: ScriptOpt
+}
+
+option TaprootScriptPathOpt (TaprootScriptPath)
+
 table TaprootLockWitnessLock {
     signature: BytesOpt,
-    preimage: BytesOpt
-    smt_proof: BytesOpt,
-    exec_script: ScriptOpt
+    script_path: TaprootScriptPathOpt
 }
 ```
 When the `signature` is present, it must follow the following data structure:
@@ -49,15 +59,8 @@ When the `signature` is present, it must follow the following data structure:
 ```
 The details of `pubkey` and `signature` are described in BIP340. The `pubkey` can be also called `Taproot output key` in BIP341.
 
-When `preimage` is present, it must contains the following data structure:
-```
-taproot_output_key: 32 bytes
-taproot_internal_key: 32 bytes
-smt_root: 32 bytes
-y_parity: 1 byte
-```
-When `preimage` is present, `smt_proof` and `exec_script` must be present too. 
-These fields will be described in the following sections.
+The `script_path` and `signature` can't coexist and can't be both none: One and only one can be chosen. 
+These fields of `script_path` will be described in the following sections.
 
 There are 2 unlock methods: key path spending and script path spending. They are almost identical to [Script validation rules in BIP341](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#script-validation-rules), except some data structures.
 
@@ -75,7 +78,7 @@ It will be used in later section.
 
 ### Key Path Spending
 
-When `signature`  is not none and `preimage`, `smt_proof`, `exec_script` are all none:
+When `signature` is not none and `script_path` are none:
 the key path spending is used.  It follows the CKB secp256k1 unlocking method, replacing secp256k1 with schnorr algorithm. The identity content in script args is the blake160 hash of `pubkey` (Taproot output key) in `signature`.
 
 Because schnorr signature  is not standardized, we here use all the definitions and scheme in [BIP340](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki), including:
@@ -94,9 +97,9 @@ Because schnorr signature  is not standardized, we here use all the definitions 
 
 ### Script Path Spending
 
-When `signature` is none and `preimage`, `smt_proof`, `exec_script` are not none:
-the script path spending is used. 
-To simplify the process, we will use some python code here. The referenced python code can be  found on [bip340 reference.py](https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py).
+When `signature` is none and `script_path` are not none: the script path spending is used. 
+To simplify the process, we will use some python code here. The referenced python code can be  
+found on [bip340 reference.py](https://github.com/bitcoin/bips/blob/master/bip-0340/reference.py).
 
 * A tweaked key is calculated from `taproot_internal_key` and `smt_root`
 
@@ -167,9 +170,7 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <taproot output key 1> <valid schnorr signature for taproot output key 1>
-        preimage:  <MISSING>
-        smt_proof: <MISSING>
-        exec_script: <MISSING>
+        script_path:  <MISSING>
       <...>
 ```
 
@@ -195,16 +196,16 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <MISSING>
-        preimage:  
+        script_path:
             taproot_output_key: <taproot output key 1>
             taproot_internal_key: <taproot internal key>
             smt_root: <SMT root>
+            smt_proof: <SMT proof>
             y_parity: <parity of Y which belongs to a point P on the curve whose X coordinate is taproot output key 1>
-        smt_proof: <proofs>
-        exec_script:
-            code_hash: <code hash of exec script>
-            hash_type: <hash type of exec script>
-            args: <exec arguments>
+            exec_script:
+                code_hash: <code hash of exec script>
+                hash_type: <hash type of exec script>
+                args: <exec arguments>
       <...>
 ```
 
