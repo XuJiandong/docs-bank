@@ -36,23 +36,25 @@ When unlocking a Taproot lock,  the corresponding witness must be a
 proper `WitnessArgs` data structure in molecule format: In lock field of the `WitnessArgs`, 
 a `TaprootLockWitnessLock` data structure as follows, must be present:
 ```
+import blockchain;
 
 table TaprootScriptPath {
     taproot_output_key: Byte32,
     taproot_internal_key: Byte32,
     smt_root: Byte32,
     smt_proof: Bytes,
-    y_parity: Byte,
-    exec_script: ScriptOpt,
-    args2: Bytes
+    y_parity: byte,
+    exec_script: Script,
+    args2: Bytes,
 }
 
-option TaprootScriptPathOpt (TaprootScriptPath)
+option TaprootScriptPathOpt (TaprootScriptPath);
 
 table TaprootLockWitnessLock {
     signature: BytesOpt,
-    script_path: TaprootScriptPathOpt
+    script_path: TaprootScriptPathOpt,
 }
+
 ```
 When the `signature` is present, it must follow the following data structure:
 ```
