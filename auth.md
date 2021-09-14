@@ -13,7 +13,7 @@ typedef struct CkbAuthType {
 ```
 It takes 21 bytes memory on chain. The content can be blake160 hash of pubic key, preimage, or some others. 
 
-### Flags
+### Auth Flags
 Here we list the known flags which have been used already:
 - ckb = 0
 - ethereum = 1
@@ -40,7 +40,7 @@ typedef struct EntryType {
     uint8_t code_hash[32];
     uint8_t hash_type;
     uint8_t entry_category;
-    uint32_t auth_flags;
+    uint8_t auth_flags;
 } EntryType;
 ```
 
@@ -53,15 +53,14 @@ typedef struct EntryType {
   - dynamic linking
   - exec
 
-* Auth flags
+* auth_flags
 
-  [As described above](###Flags).
-
+  As described above.
 
 ### Entry Category: Dynamic Linking
 We define the follow functions when entry category is `dynamic liking`:
 ```C
-int validate_signature(uint32_t auth_flags, const uint8_t *signature,
+int validate_signature(uint8_t auth_flags, const uint8_t *signature,
     size_t signature_size, const uint8_t *message, size_t message_size,
     uint8_t *pubkey_hash, size_t pubkey_hash_size);
 ```
