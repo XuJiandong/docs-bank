@@ -40,7 +40,7 @@ typedef struct EntryType {
     uint8_t code_hash[32];
     uint8_t hash_type;
     uint8_t entry_category;
-    uint32_t aut_flags;
+    uint32_t auth_flags;
 } EntryType;
 ```
 
@@ -61,7 +61,7 @@ typedef struct EntryType {
 ### Entry Category: Dynamic Linking
 We define the follow functions when entry category is `dynamic liking`:
 ```C
-int validate_signature(uint32_t aut_flags, const uint8_t *signature,
+int validate_signature(uint32_t auth_flags, const uint8_t *signature,
     size_t signature_size, const uint8_t *message, size_t message_size,
     uint8_t *pubkey_hash, size_t pubkey_hash_size);
 ```
