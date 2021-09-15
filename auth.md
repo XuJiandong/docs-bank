@@ -77,10 +77,10 @@ This category actually shares same arguments and behavior to [Entry Category: Ex
 
 ```text
 <code hash>:<hash type>
-:<auth algorithm id 1>:<pubkey hash 1>:<message 1>:<signature 1>
-:<auth algorithm id 2>:<pubkey hash 2>:<message 2>:<signature 2>
+:<auth algorithm id 1>:<signature 1>:<message 1>:<pubkey hash 1>
+:<auth algorithm id 2>:<signature 2>:<message 2>:<pubkey hash 2>
 ...
-:<auth algorithm id n>:<pubkey hash n>:<message n>:<signature n>
+:<auth algorithm id n>:<signature n>:<message n>:<pubkey hash n>
 ```
 Here 2 new fields are added:
 - auth algorithm id
