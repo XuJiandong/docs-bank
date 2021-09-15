@@ -60,7 +60,7 @@ typedef struct EntryType {
 ### Entry Category: Dynamic Linking
 We define the follow functions when entry category is `dynamic liking`:
 ```C
-int validate_signature(uint8_t auth_algorithm_id, const uint8_t *signature,
+int ckb_auth_validate(uint8_t auth_algorithm_id, const uint8_t *signature,
     size_t signature_size, const uint8_t *message, size_t message_size,
     uint8_t *pubkey_hash, size_t pubkey_hash_size);
 ```
@@ -69,7 +69,7 @@ The first argument denotes the `auth_algorithm_id` described above.
 The names of last 2 arguments are changed into input arguments instead of output arguments: make them same to [Entry category: exec](#entry-category-exec). 
 Other arguments are kept as same to [RFC: Swappable Signature Verification Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802).
 
-A valid dynamic library denoted by `EntryType` should provide `validate_signature`.
+A valid dynamic library denoted by `EntryType` should provide `ckb_auth_validate`.
 
 ### Entry Category: Exec
 
@@ -92,7 +92,7 @@ We can implement different auth algorithm id in same code binary. For example, t
 The following API can combine the low level APIs together:
 
 ```C
-int validate_signature(EntryType* entry, const uint8_t *signature,
+int ckb_auth_validate(EntryType* entry, const uint8_t *signature,
     size_t signature_size, const uint8_t *message, size_t message_size,
     uint8_t *pubkey_hash, size_t pubkey_hash_size);
 ```
