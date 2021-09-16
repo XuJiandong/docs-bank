@@ -21,9 +21,10 @@ Here we list the known id which have been used already:
 - tron = 3
 - bitcoin = 4
 - dogecoin = 5
-- schnorr/taproot = 6
-- iso_9796_2 = 7
-- RSA = 8
+- ckb_multisig = 6
+- schnorr/taproot = 7
+- iso_9796_2 = 8
+- RSA = 9
 - owner_lock = 0xFC
 
 
@@ -40,7 +41,6 @@ typedef struct EntryType {
     uint8_t code_hash[32];
     uint8_t hash_type;
     uint8_t entry_category;
-    uint8_t auth_algorithm_id;
 } EntryType;
 ```
 
@@ -52,10 +52,6 @@ typedef struct EntryType {
   The entry to the algorithm. Now there are 2 categories:
   - dynamic linking
   - exec
-
-* auth_algorithm_id
-
-  As described above.
 
 ### Entry Category: Dynamic Linking
 We define the follow functions when entry category is `dynamic liking`:
@@ -90,16 +86,8 @@ We can implement different auth algorithm id in same code binary. For example, t
 
 ### High Level APIs
 The following API can combine the low level APIs together:
-
 ```C
-int ckb_auth_validate(EntryType* entry, const uint8_t *signature,
-    size_t signature_size, const uint8_t *message, size_t message_size,
-    uint8_t *pubkey_hash, size_t pubkey_hash_size);
-```
- 
-And much higher level and final API for auth: 
-```C
-int ckb_auth(EntryType* entry, CkbAuthType *id, const uint8_t *message32, uint8_t *signature, size_t signature_size)
+int ckb_auth(EntryType* entry, CkbAuthType *id, uint8_t *signature, size_t signature_size, const uint8_t *message32)
 ```
 Most of developers only need to use this function without knowing the low level APIs.
 
