@@ -57,8 +57,8 @@ typedef struct EntryType {
 We define the follow functions when entry category is `dynamic liking`:
 ```C
 int ckb_auth_validate(uint8_t auth_algorithm_id, const uint8_t *signature,
-    size_t signature_size, const uint8_t *message, size_t message_size,
-    uint8_t *pubkey_hash, size_t pubkey_hash_size);
+    uint32_t signature_size, const uint8_t *message, uint32_t message_size,
+    uint8_t *pubkey_hash, uint32_t pubkey_hash_size);
 ```
 The first argument denotes the `auth_algorithm_id` described above.
 
@@ -87,7 +87,7 @@ We can implement different auth algorithm id in same code binary. For example, t
 ### High Level APIs
 The following API can combine the low level APIs together:
 ```C
-int ckb_auth(EntryType* entry, CkbAuthType *id, uint8_t *signature, size_t signature_size, const uint8_t *message32)
+int ckb_auth(EntryType* entry, CkbAuthType *id, uint8_t *signature, uint32_t signature_size, const uint8_t *message32)
 ```
 Most of developers only need to use this function without knowing the low level APIs.
 
