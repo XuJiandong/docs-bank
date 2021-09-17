@@ -16,15 +16,35 @@ It takes 21 bytes memory on chain. The content can be blake160 hash of pubic key
 ### Auth Algorithm Id
 Here we list the known id which have been used already:
 - ckb = 0
+
+[reference implementation](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c).
 - ethereum = 1
+
+[reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L199)
 - eos = 2
+
+[reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L206)
 - tron = 3
+
+[reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L213)
 - bitcoin = 4
+
+[reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L220)
 - dogecoin = 5
+
+[reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L227)
 - ckb_multisig = 6
+
+[reference implementation](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c)
 - schnorr/taproot = 7
+
 - iso_9796_2 = 8
+
+[reference implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/e570c11aff3eca12a47237c21598429088c610d5/c/validate_signature_rsa.h#L115)
 - RSA = 9
+
+[reference implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/e570c11aff3eca12a47237c21598429088c610d5/c/validate_signature_rsa.h#L115)
+
 - owner_lock = 0xFC
 
 
