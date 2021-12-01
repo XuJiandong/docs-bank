@@ -31,7 +31,7 @@ Depending on the value of the flag, the auth content has different interpretatio
 * 0xFE: auth content represents the blake160 hash of a preimage. The preimage contains dynamic linking information which are used to delegate signature verification to dynamic linking script. The interface described in [Swappable Signature Verification Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
 
 
-## Regulation Compliance Lock Script
+## Omni Lock Script
 
 An omni lock script has the following structure:
 
@@ -63,7 +63,7 @@ when `<omni lock flags> & (1 << 2)` is not zero,  which we call "time lock mode"
 
 The "anyone-can-pay mode" and "time lock mode" can co-exist.
 
-## Regulation Compliance Lock Witness
+## Omni Lock Witness
 
 Note: "identity" are the same meaning of "auth" in code, due to historical reason.
 
