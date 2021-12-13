@@ -69,7 +69,7 @@ max supply (16 bytes, little endian number)
 sUDT script hash (32 bytes, sUDT type script hash)
 ... (variable length, other data)
 ```
-Currently, the `version` is 0. Only `currently supply` field can be updated during transaction. The script iterate all input and output cells, accumulating input [amount]([https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333]) and output amount identified by `sUDT script hash`.  Then verify:
+Currently, the `version` is 0. Only the `currently supply` field can be updated during transaction. The script iterate all input and output cells, accumulating input [amounts](https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333) and output amounts identified by `sUDT script hash`.  Then verify:
 ```
 <issued amount> = <output amount> - <input amount>
 <output current supply> = <issued amount> + <input current supply>
