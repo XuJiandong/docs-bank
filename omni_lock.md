@@ -61,15 +61,15 @@ When `<omni lock flags> & (1 << 1)` is not zero, which we call "anyone-can-pay m
 
 When `<omni lock flags> & (1 << 2)` is not zero,  which we call "time lock mode", `<8 bytes since for time lock>` is present. The [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91) is used. The input parameter `since` is obtained from ` <8 bytes since for time lock>`.
 
-When `<omni lock flags> & (1 << 3)` is not zero,  which we call "supply mode", `<32 bytes type script hash>` is present. The `info cell` which is specified by `type script hash` has the following data structure:
+When `<omni lock flags> & (1 << 3)` is not zero,  which we call "supply mode", `<32 bytes type script hash>` is present. The cell data of `info cell` which is specified by `type script hash` has the following data structure:
 ```
-version (1 byte, now it's 0)
+version (1 byte)
 current supply (16 bytes, little endian number)
-max supply(16 bytes, little endian number)
+max supply (16 bytes, little endian number)
 sUDT script hash (32 bytes, sUDT type script hash)
 ... (variable length, other data)
 ```
-Only `currently supply` field can be updated during transaction. The script iterate all input and output cells, accumulating input [amount]([https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333]) and output amount identified by `sUDT script hash`.  Then verify:
+Currently, the `version` is 0. Only `currently supply` field can be updated during transaction. The script iterate all input and output cells, accumulating input [amount]([https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333]) and output amount identified by `sUDT script hash`.  Then verify:
 ```
 <issued amount> = <output amount> - <input amount>
 <output current supply> = <issued amount> + <input current supply>
