@@ -26,6 +26,9 @@ Omni lock introduces a new concept `auth` (authentication) to CKB lock scripts: 
 Depending on the value of the flag, the auth content has different interpretations:
 
 * 0x0: auth content represents the blake160 hash of a secp256k1 public key. The lock script will perform secp256k1 signature verification, just as the [SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#secp256k1blake160) lock.
+* 0x01~0x05: following same unlocking methods used by [pw-lock](https://github.com/lay2dev/pw-lock/blob/c2b1456bcca06c892e1bb8ec8ac0a64d4fb2b83d/c/pw_lock.h#L190-L223)
+* 0x06: following same unlocking method used by [CKB MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c)
+
 * 0xFC: auth content represents the blake160 hash of a lock script. The lock script will check if current transaction contains an input cell with matching lock script. Otherwise it would return with an error.
 * 0xFD: auth content represents the blake160 hash of a preimage. The preimage contains [exec](https://github.com/nervosnetwork/rfcs/pull/237) information which are used to delegate signature verification to another script via exec.
 * 0xFE: auth content represents the blake160 hash of a preimage. The preimage contains dynamic linking information which are used to delegate signature verification to dynamic linking script. The interface described in [Swappable Signature Verification Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
@@ -51,7 +54,9 @@ when `<omni lock flags> & 1` is not zero,  which we call "administrator mode", <
 * If the cell contains a RCRule structure, the RCRule structure must be in whitelist mode.
 * If the cell contains a RCCellVec structure, there must at least be one RCRule structure using whitelists in the RCCellVec.
 
-For ease of reference, we call this cell `RC AdminList Cell`.
+For ease of reference, we call this cell `RC AdminList Cell`. To make this mode more flexible, 
+when no `type script hash` is found in [cell_deps](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md), 
+it continues searching input cells with same type script hash. If some cell is found, it is used as `RC AdminList Cell`.
 
 When an administrator tries to unlock the cell using omni lock, the administrator must provide SMT proofs for the auth used for validation. See the following part for more details. 
 
@@ -348,3 +353,41 @@ Witnesses:
         preimage: <MISSING>
       <...>
 ```
+
+### Unlock via administrator's lock script hash (2)
+
+Note: the location of `RC AdminList Cell 1`
+
+```
+CellDeps:
+    <vec> omni lock Script Cell
+
+Inputs:
+    <vec> RC AdminList Cell 1
+        Data: <RCData, union of RCCellVec and RCRule>
+        Type: <its hash is same to RC AdminList Cell 1's type ID>
+        Lock: <...>
+    <vec> Cell
+        Data: <...>
+        Type: <...>
+        Lock:
+            code_hash: omni lock
+            args: <flag: 0> <pubkey hash 1> <omni lock flags: 1> <RC AdminList Cell 1's type ID>
+    <vec> Cell
+        Data: <...>
+        Type: <...>
+        Lock: blake160 for this lock script must be 0x1234
+    <...>
+Outputs:
+    <vec> Any cell
+Witnesses:
+    WitnessArgs structure:
+      Lock:
+        signature: <MISSING>
+        rc_identity:
+           identity: <flag: 0xFC> <lock hash: 0x1234>
+           proofs: <SMT proofs for the above identity in RC AdminList Cell 1>
+        preimage: <MISSING>
+      <...>
+```
+
