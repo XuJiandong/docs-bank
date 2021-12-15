@@ -25,7 +25,7 @@ Omni Lock introduces a new concept `auth` (authentication) to CKB lock scripts: 
 
 Depending on the value of the flag, the auth content has different interpretations:
 
-* 0x0: auth content represents the blake160 hash of a secp256k1 public key. The lock script will perform secp256k1 signature verification, the same as the [SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#secp256k1blake160) lock.
+* 0x0: The auth content that represents the blake160 hash of a secp256k1 public key. The lock script will perform secp256k1 signature verification, the same as the [SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#secp256k1blake160) lock.
 * 0x01~0x05: It follows the same unlocking methods used by [pw-lock](https://github.com/lay2dev/pw-lock/blob/c2b1456bcca06c892e1bb8ec8ac0a64d4fb2b83d/c/pw_lock.h#L190-L223)
 * 0x06: It follows the same unlocking method used by [CKB MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c)
 
