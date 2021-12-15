@@ -47,7 +47,7 @@ Args: <21 byte auth> <Omni Lock args>
 ```
 The `<Omni Lock args>` has the following structure:
 ```
-<1 byte Omni Lock flags> <32 byte RC cell type ID> <2 bytes minimum ckb/udt in ACP> <8 bytes since for time lock>
+<1 byte Omni Lock flags> <32 byte RC cell type ID, optional> <2 bytes minimum ckb/udt in ACP, optional> <8 bytes since for time lock, optional> <32 bytes type script hash for supply, optional>
 ```
 
 When `<Omni Lock flags> & 1` is not zero,  which we call "administrator mode", <32 byte RC cell type ID> is present. The RC cell type ID contains the [type script hash](https://xuejie.space/2020_02_03_introduction_to_ckb_script_programming_type_id/) used by a special cell with the same format as [RCE Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338), but the RC cell has the following distinctions:
@@ -82,8 +82,7 @@ Currently, the `version` is 0. Only the `currently supply` field can be updated 
 <output current supply> = <issued amount> + <input current supply>
 ```
 
-
-The "anyone-can-pay mode" and "time lock mode" can co-exist.
+All the modes mentioned above can co-exist. 
 
 ## Omni Lock Witness
 
