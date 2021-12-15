@@ -116,7 +116,7 @@ When `rc_identity` is missing, the auth included in lock script args will then b
 
 Once the auth to be used is confirmed, we will look for the flag in the designated auth for succeeding operations:
 
-* When the auth flag is 0x0, a signature must be present in `RcLockWitnessLock`. We will used the signature for secp256k1 recoverable signature verification. The recovered public key hash using blake160 algorithm, must match the current auth content.
+* When the auth flag is 0x0, a signature must be present in `RcLockWitnessLock`. We will use the signature for secp256k1 recoverable signature verification. The recovered public key hash using blake160 algorithm, must match the current auth content.
 
 * When the auth flag is 0xFC, we will check against current transaction, and there must be an input cell, whose lock script matches the auth content when hashed via blake160.
 
