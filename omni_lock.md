@@ -64,7 +64,7 @@ When an administrator tries to unlock the cell using Omni Lock, the administrato
 
 When it's in "administrator mode", "anyone-can-pay mode" and "time lock mode" below are ignored.
 
-When `<Omni Lock flags> & (1 << 1)` is not zero, which we call "anyone-can-pay mode", `<2 bytes minimum ckb/udt in ACP>` is present. it follows the script: [anyone-can-pay lock](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438). The `<1 byte CKByte minimum>` and `<1 byte UDT minimum>` are present at the same time. 
+When `<Omni Lock flags> & (1 << 1)` is not zero, which we call "anyone-can-pay mode", `<2 bytes minimum ckb/udt in ACP>` is present. It follows the script: [anyone-can-pay lock](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438). The `<1 byte CKByte minimum>` and `<1 byte UDT minimum>` are present at the same time. 
 
 When `<Omni Lock flags> & (1 << 2)` is not zero,  which we call "time lock mode", `<8 bytes since for time lock>` is present. The [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91) is used. The input parameter `since` is obtained from ` <8 bytes since for time lock>`.
 
