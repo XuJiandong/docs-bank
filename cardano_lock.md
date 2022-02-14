@@ -13,9 +13,20 @@ A Cardano Lock script has the following structure:
 ```
 Code hash: Cardano Lock script code hash
 Hash type: Cardano Lock script hash type
-Args: <payment pubkey hash (Blake2b224), 28 bytes> <stake pubkey hash (Blake2b224), 28 bytes>
+Args: <header byte, 1 byte> <payment pubkey hash (Blake2b224), 28 bytes> <stake pubkey hash (Blake2b224), 28 bytes, optional>
 ```
 The `args` in lock script represents two Blake2b224 hashes of 32 bytes ED25519 pubkey:  one is for payment and the other for stake.
+
+In the header byte, bits [7;4] indicate the type of addresses being used; we'll call these four bits the header type. According to the
+[Shelley Addresses](https://cips.cardano.org/cips/cip19/#shelleyaddresses), the header byte should be in following values:
+
+- 0b0000
+- 0b0010
+- 0b0100
+- 0b0110
+
+For 0b0110 case, the stake pubkey hash part can be optional.
+
 
 ## Witness
 
@@ -55,7 +66,7 @@ Inputs:
         Type: <...>
         Lock:
             code_hash: Cardano Lock
-            args: <Blake2b224 hash of ED25519 pubkey 1 (payment), 28 bytes> <Blake2b224 hash of ED25519 pubkey 2 (stake), 28 bytes>
+            args: <header byte, 1 byte> <Blake2b224 hash of ED25519 pubkey 1 (payment), 28 bytes> <Blake2b224 hash of ED25519 pubkey 2 (stake), 28 bytes>
     <...>
 Outputs:
     <vec> Any cell
