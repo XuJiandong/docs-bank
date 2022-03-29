@@ -1,3 +1,6 @@
+NOTE: A  [better version](https://blog.cryptape.com/omnilock-a-universal-lock-that-powers-interoperability-1) is released on cryptape blog.
+It's strongly suggested.
+
 # Omni Lock
 
 NOTE: We used to use the term *Regulation Compliance Lock (RC Lock)* instead of *Omni Lock*. These terms are interchangeable.
