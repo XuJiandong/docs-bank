@@ -143,6 +143,14 @@ Transfer cycles: 56, running cycles: 515
 
 
 ---
+# More Resources
+![bg opacity:90%](./bg.jpeg)
+<!-- header: Introduction to CKB Scripts -->
+
+https://docs-xi-two.vercel.app/
+https://github.com/nervosnetwork/rfcs
+
+---
 # Thanks
 ![bg opacity:90%](./bg.jpeg)
 <!-- header: Introduction to CKB Scripts -->
