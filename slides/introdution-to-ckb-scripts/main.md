@@ -147,8 +147,9 @@ Transfer cycles: 56, running cycles: 515
 ![bg opacity:90%](./bg.jpeg)
 <!-- header: Introduction to CKB Scripts -->
 
-https://docs-xi-two.vercel.app/
-https://github.com/nervosnetwork/rfcs
+
+https://docs-xi-two.vercel.app/ (tutorial, easy to read and follow)
+https://github.com/nervosnetwork/rfcs (RFC, formal but complex)
 
 ---
 # Thanks
