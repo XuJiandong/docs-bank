@@ -28,7 +28,7 @@ Key parameters:
 * pubkey hash: blake160 of pubkey
 
 
-#### ethereum(algorithm_id=1)
+#### Ethereum(algorithm_id=1)
 
 It is implemented by blockchain Ethereum.
 [reference implementation](https://github.com/XuJiandong/pw-lock/blob/e7f5f2379185d4acf18af38645559102e100a545/c/pw_lock.h#L199)
@@ -75,17 +75,17 @@ Key parameters:
 - pubkey hash: blake160 on pubkey
 
 `multisig_script` has following structure:
-
 ```
-// +-------------+------------------------------------+-------+
-// |             |           Description              | Bytes |
-// +-------------+------------------------------------+-------+
-// | S           | reserved field, must be zero       |     1 |
-// | R           | first nth public keys must match   |     1 |
-// | M           | threshold                          |     1 |
-// | N           | total public keys                  |     1 |
-// | PubkeyHashN | blake160 hash of compressed pubkey |    20 |
-// | SignatureN  | recoverable signature              |    65 |
++-------------+------------------------------------+-------+
+|             |           Description              | Bytes |
++-------------+------------------------------------+-------+
+| S           | reserved field, must be zero       |     1 |
+| R           | first nth public keys must match   |     1 |
+| M           | threshold                          |     1 |
+| N           | total public keys                  |     1 |
+| PubkeyHash1 | blake160 hash of compressed pubkey |    20 |
+|  ...        |           ...                      |  ...  |
+| PubkeyHashN | blake160 hash of compressed pubkey |    20 |
 ```
 
 
