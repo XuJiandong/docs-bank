@@ -1,5 +1,5 @@
 In this document, we will introduce a new concept, `auth` (authentication).
-Previously it's called `identity` which was firstly introduced in [RFC: Regulation Compliance Lock](https://talk.nervos.org/t/rfc-regulation-compliance-lock/5788).
+It was firstly introduced in [RFC: Omnilock](https://github.com/nervosnetwork/rfcs/pull/343).
 It's used for authentication by validating signature.
 
 ### Definition
